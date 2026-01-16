@@ -4,6 +4,7 @@
 
 #include <Adafruit_NeoPixel.h>
 
+// --- Configuration & globals ---
 #define NEOPIXEL_PIN   6
 #define NUM_PIXELS     4
 
@@ -18,6 +19,7 @@ Adafruit_NeoPixel strip(NUM_PIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 uint32_t colors[4];
 
+// --- Function declarations ---
 void playSequence();
 bool readAndCheckPlayerInput();
 int  waitForButtonPress();
@@ -27,6 +29,7 @@ void playFailAnimation();
 void playWinAnimation();
 void startupAnimation();
 
+// --- Arduino setup ---
 void setup() {
   strip.begin();
   strip.show();
@@ -48,6 +51,7 @@ void setup() {
   startupAnimation();
 }
 
+// --- Main game loop ---
 void loop() {
   sequence[sequenceLength - 1] = random(0, 4);
 
@@ -71,6 +75,7 @@ void loop() {
   }
 }
 
+// --- Show current sequence to the player ---
 void playSequence() {
   delay(400);
 
@@ -81,6 +86,7 @@ void playSequence() {
   }
 }
 
+// --- Read full player input and compare to sequence ---
 bool readAndCheckPlayerInput() {
   for (int i = 0; i < sequenceLength; i++) {
     int expected = sequence[i];
@@ -93,6 +99,7 @@ bool readAndCheckPlayerInput() {
   return true;
 }
 
+// --- Wait until any button is pressed and return its index ---
 int waitForButtonPress() {
   while (true) {
     for (int i = 0; i < 4; i++) {
@@ -110,6 +117,7 @@ int waitForButtonPress() {
   }
 }
 
+// --- Light one pixel and play its tone ---
 void showPixel(int index, uint32_t color, int durationMs) {
   int freq;
   switch (index) {
@@ -129,6 +137,7 @@ void showPixel(int index, uint32_t color, int durationMs) {
   clearPixels();
 }
 
+// --- Turn off all pixels ---
 void clearPixels() {
   for (int i = 0; i < NUM_PIXELS; i++) {
     strip.setPixelColor(i, 0);
@@ -136,6 +145,7 @@ void clearPixels() {
   strip.show();
 }
 
+// --- Fail animation when player makes a mistake ---
 void playFailAnimation() {
   for (int k = 0; k < 3; k++) {
     for (int i = 0; i < NUM_PIXELS; i++) {
@@ -150,6 +160,7 @@ void playFailAnimation() {
   }
 }
 
+// --- Win animation when sequenceLength reaches max ---
 void playWinAnimation() {
   for (int k = 0; k < 3; k++) {
     for (int i = 0; i < NUM_PIXELS; i++) {
@@ -164,6 +175,7 @@ void playWinAnimation() {
   }
 }
 
+// --- Short startup animation to test LEDs and buzzer ---
 void startupAnimation() {
   for (int i = 0; i < 4; i++) {
     showPixel(i, colors[i], 200);
